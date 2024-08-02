@@ -1,6 +1,7 @@
 from functions import *
 from tax_for_each_province import *
 from tkinter import * 
+from tkinter import messagebox
 
 #Defining the Board
 root=Tk()
@@ -8,8 +9,32 @@ root.title("Tax Calculator")
 centerwindow(root,400,600)
 
 #Starting the calculation
-first_text=Label(root,text="Please select your province")
-first_text.pack()
+def TaxCalc():
+    selected_province = var.get()
+    try:
+        income = int(income_input.get())
+        if income < 0:
+            messagebox.showerror("Error", "Please enter a valid income")
+            return
+    except ValueError:
+        messagebox.showerror("Error", "Please enter a numeric income")
+        return
+
+    tax_rates = provinces.get(selected_province, {})
+    tax = 0
+    previous_bracket = 0
+
+    for bracket, rate in sorted(tax_rates.items()):
+        if income <= bracket:
+            tax += (income - previous_bracket) * rate
+            break
+        else:
+            tax += (bracket - previous_bracket) * rate
+            previous_bracket = bracket
+
+       
+    messagebox.showinfo("Tax",f"Income : {income}\n Tax : ${tax:.2f}\n Net income : {income-tax}")
+
 
 #Adding Provinces
 
@@ -34,13 +59,16 @@ selected_province.set("Ontario")
 var=StringVar()
 var.set("Ontario")
 
-province_selection=OptionMenu(root,var,*provinces.keys())
-province_selection.pack()
+province_selection=OptionMenu(root,var,*provinces.keys()).pack()
 
 var.trace("w", update_selected_option(var, selected_province))
 
-income_input=Entry(root)
+income_input = Entry(root)
 income_input.pack()
+income_input.insert(0, "0")
+
+calculation_button = Button(root, text="Calculate", command=TaxCalc).pack()
+
 
 root.mainloop()
 print("Selected province : "+selected_province.get())

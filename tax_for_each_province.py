@@ -14,15 +14,3 @@ SK_TAX_RATES={52057:0.105,148734:0.125,999999999999:0.145}
 NT_TAX_RATES={50597:0.059,101198:0.086,164525:0.122,999999999999:0.1405}
 NU_TAX_RATES={53268:0.04,106537:0.07,173205:0.09,999999999999:0.115}
 YT_TAX_RATES={55867:0.064,111733:0.09,173205:0.109,500000:0.128,999999999999:0.15}
-
-
-#Income Tax Calculator
-
-def BCTaxCalc(selected_province,income:int)->int:
-    while(income<0):
-        income=int(input("Please enter a Valid Income : "))
-    for tax_brc in BC_TAX_RATES:
-        if(income<tax_brc):
-            tax=income*BC_TAX_RATES[tax_brc]
-            break
-    return tax
