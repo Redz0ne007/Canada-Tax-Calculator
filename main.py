@@ -7,7 +7,7 @@ from tkinter import messagebox
 root=Tk()
 root.title("Tax Calculator")
 centerwindow(root,400,600)
-
+root.configure(bg="#6e6e6e")
 #Starting the calculation
 def TaxCalc():
     selected_province = var.get()
@@ -21,19 +21,28 @@ def TaxCalc():
         return
 
     tax_rates = provinces.get(selected_province, {})
-    tax = 0
+    prov_tax = 0
     previous_bracket = 0
 
     for bracket, rate in sorted(tax_rates.items()):
         if income <= bracket:
-            tax += (income - previous_bracket) * rate
+            prov_tax += (income - previous_bracket) * rate
             break
         else:
-            tax += (bracket - previous_bracket) * rate
+            prov_tax += (bracket - previous_bracket) * rate
             previous_bracket = bracket
 
-       
-    messagebox.showinfo("Tax",f"Income : {income}\n Tax : ${tax:.2f}\n Net income : {income-tax}")
+    previous_bracket=0
+    fed_tax=0
+    for bracket in FED_TAX_RATES:
+        if income<=bracket:
+            fed_tax+= (income-previous_bracket)* FED_TAX_RATES.get(bracket)
+            break
+        else:
+            fed_tax+= (bracket-previous_bracket)* FED_TAX_RATES.get(bracket)
+            previous_bracket=bracket
+    
+    messagebox.showinfo("Tax",f"Income : ${income}\n Federal Tax : ${fed_tax:.2f}\n Provincial Tax : ${prov_tax:.2f}\n Net income : ${income-prov_tax-fed_tax:.2f}")
 
 
 #Adding Provinces
